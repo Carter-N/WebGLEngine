@@ -1,2 +1,2 @@
 # WebGLSandbox
-3d rendering examples made with webGL
+3d webGL game engine.
