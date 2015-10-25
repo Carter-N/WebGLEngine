@@ -1,0 +1,24 @@
+1-Input manager
+  *Keyboard input with keys down tracking and keyboard events
+  *Mouse input with position tracker and mouse events
+
+2-(Game System / Game Object) manager
+  *Game objects that can be instantiated and manipulated
+
+3-Scene manager
+  *Switch from scene to scene similarly to a game state manager
+
+4-Audio manager
+  *Load audio to dictionary
+  *play or stop audio at will / in loops
+
+5-Lighting
+  *Diffuse lighting
+  *Directional light game object
+  *Ambient light game object
+  *Point light game object
+
+6-Javascript include system (load scripts from the core module)
+  *Possibly 3rd party
+
+7-Easy to use primitive models?
