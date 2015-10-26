@@ -22,3 +22,5 @@
   *Possibly 3rd party
 
 7-Easy to use primitive models?
+
+8-Model scaling

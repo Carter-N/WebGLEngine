@@ -156,7 +156,7 @@ var renderer = (function(){
 
     //Rotate the model view matrix
     mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.x), [1, 0, 0]);
-    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.x), [0, 1, 0]);
+    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.y), [0, 1, 0]);
     mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.z), [0, 0, 1]);
 
     //Bind vertex position buffer to renderer
@@ -200,7 +200,7 @@ var renderer = (function(){
         x: 0.0, y: -3.0, z: -10.0
       },
       rotation: {
-        x: 0, y: 0, z: 0
+        x: 90, y: 0, z: 0
       }
     });
 
@@ -210,7 +210,7 @@ var renderer = (function(){
         x: 0.0, y: 0.0, z: -10.0
       },
       rotation: {
-        x: 0, y: core.rotX, z: 0.0
+        x: core.rotX, y: core.rotY, z: 0.0
       }
     });
   };
