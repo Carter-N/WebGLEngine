@@ -45,13 +45,28 @@ var modelManager = (function(){
   };
 
   //Load a JSON model to render
-  var loadJSONModel = function(){
+  var loadJSONModel = function(key, src){
 
+    //HTTP request
+    var request = new XMLHttpRequest();
+    request.open("GET", src);
+
+    //When loaded
+    request.onreadystatechange = function(){
+      if(request.readyState == 4){
+
+        //Get JSON data
+        var data = JSON.parse(request.responseText);
+        modelManager.addModel(key, data.vertexPositions, data.vertexNormals, data.vertexTextureCoords, data.indices)
+      }
+    }
+    request.send();
   };
 
   //Module visibility
   return {
     models: models,
-    addModel: addModel
+    addModel: addModel,
+    loadJSONModel: loadJSONModel
   };
 })();

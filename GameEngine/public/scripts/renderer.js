@@ -32,8 +32,6 @@ var renderer = (function(){
     //Initialize renderer attributes
     renderer.initGL();
     renderer.initShaders();
-    renderer.initBuffers();
-    renderer.initTextures();
 
     //Set background color
     renderer.gl.clearColor(0, 0, 0, 1.0);
@@ -94,84 +92,6 @@ var renderer = (function(){
     renderer.shaderProgram.directionalColorUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uDirectionalColor");
   };
 
-  //Setup buffers
-  var initBuffers = function(){
-
-    //Vertex positions
-    var cubeVertices = [
-      -1.0, -1.0,  1.0, 1.0, -1.0,  1.0, 1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, 1.0,  1.0, -1.0, 1.0, -1.0, -1.0,
-      -1.0,  1.0, -1.0, -1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0,  1.0, -1.0, -1.0,  1.0,
-      1.0, -1.0, -1.0, 1.0,  1.0, -1.0, 1.0,  1.0,  1.0, 1.0, -1.0,  1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0,
-    ];
-
-    //Vertex normals
-    var cubeVertexNormals = [
-      0.0,  0.0,  1.0,
-      0.0,  0.0,  1.0,
-      0.0,  0.0,  1.0,
-      0.0,  0.0,  1.0,
-      0.0,  0.0, -1.0,
-      0.0,  0.0, -1.0,
-      0.0,  0.0, -1.0,
-      0.0,  0.0, -1.0,
-      0.0,  1.0,  0.0,
-      0.0,  1.0,  0.0,
-      0.0,  1.0,  0.0,
-      0.0,  1.0,  0.0,
-      0.0, -1.0,  0.0,
-      0.0, -1.0,  0.0,
-      0.0, -1.0,  0.0,
-      0.0, -1.0,  0.0,
-      1.0,  0.0,  0.0,
-      1.0,  0.0,  0.0,
-      1.0,  0.0,  0.0,
-      1.0,  0.0,  0.0,
-      -1.0,  0.0,  0.0,
-      -1.0,  0.0,  0.0,
-      -1.0,  0.0,  0.0,
-      -1.0,  0.0,  0.0
-    ];
-
-    //UV coordinates
-    var cubeTextureCoords = [
-      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-      1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    ];
-
-    //Indices
-    var cubeIndices = [
-      0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 8, 9, 10, 8, 10, 11, 12, 13, 14, 12, 14, 15, 16, 17, 18, 16, 18, 19, 20, 21, 22, 20, 22, 23
-    ];
-
-    //Add the cube model
-    modelManager.addModel("cube", cubeVertices, cubeVertexNormals, cubeTextureCoords, cubeIndices);
-  };
-
-  //Load textures
-  var initTextures = function(){
-
-    //Cube texture
-    textureManager.addTexture("cube", "cube.png");
-  };
-
-  //Load texture to VRAM
-  var loadTextureToVRAM = function(texture){
-
-    //Flip pixel data
-    renderer.gl.pixelStorei(renderer.gl.UNPACK_FLIP_Y_WEBGL, true);
-
-    //Bind the texture to a 2d texture
-    renderer.gl.bindTexture(renderer.gl.TEXTURE_2D, texture);
-    renderer.gl.texImage2D(renderer.gl.TEXTURE_2D, 0, renderer.gl.RGBA, renderer.gl.RGBA, renderer.gl.UNSIGNED_BYTE, texture.image);
-
-    //Texture parameters
-    renderer.gl.texParameteri(renderer.gl.TEXTURE_2D, renderer.gl.TEXTURE_MAG_FILTER, renderer.gl.NEAREST);
-    renderer.gl.texParameteri(renderer.gl.TEXTURE_2D, renderer.gl.TEXTURE_MIN_FILTER, renderer.gl.NEAREST);
-
-    //Unbind texture
-    renderer.gl.bindTexture(renderer.gl.TEXTURE_2D, null);
-  };
-
   //Render a model at a position and rotation
   var renderModel = function(key, textureKey, transform){
 
@@ -204,7 +124,7 @@ var renderer = (function(){
     renderer.gl.uniform1i(renderer.shaderProgram.samplerUniform, 0);
 
     //Setup lighting for the model
-    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
+    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.8, 0.8, 0.8);
 
     //Directional light
     var lightingDirection = [45, 45, -1.0];
@@ -236,15 +156,10 @@ var renderer = (function(){
     //Set perspective matrix
     mat4.perspective(45, 1.85 / 1, 0.1, 100.0, renderer.pMatrix);
 
-    //Draw cube
-    renderer.renderModel("cube", "cube", {
-      position: {
-        x: 0.0, y: 0.0, z: -10.0
-      },
-      rotation: {
-        x: core.rotX, y: core.rotY, z: 0.0
-      }
-    });
+    //Render the current scene
+    if(sceneManager.currentScene){
+      sceneManager.currentScene.render();
+    }
   };
 
   //Set shader matrix uniforms
@@ -268,8 +183,6 @@ var renderer = (function(){
     init: init,
     initGL: initGL,
     initShaders: initShaders,
-    initBuffers: initBuffers,
-    initTextures: initTextures,
     render: render,
     mvMatrix: mvMatrix,
     mvMatrixStack: mvMatrixStack,
