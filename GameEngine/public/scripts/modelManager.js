@@ -5,7 +5,7 @@ var modelManager = (function(){
   var models = {};
 
   //Add a model to the model dictionary
-  var addModel = function(key, vertices, textureCoords, indices){
+  var addModel = function(key, vertices, normals, textureCoords, indices){
 
     //Bind vertex positions
     var modelVertexPositionBuffer = renderer.gl.createBuffer();
@@ -13,6 +13,13 @@ var modelManager = (function(){
     renderer.gl.bufferData(renderer.gl.ARRAY_BUFFER, new Float32Array(vertices), renderer.gl.STATIC_DRAW);
     modelVertexPositionBuffer.itemSize = 3;
     modelVertexPositionBuffer.numItems = vertices.length / 3;
+
+    //Bind model normals
+    var modelVertexNormalBuffer = renderer.gl.createBuffer();
+    renderer.gl.bindBuffer(renderer.gl.ARRAY_BUFFER, modelVertexNormalBuffer);
+    renderer.gl.bufferData(renderer.gl.ARRAY_BUFFER, new Float32Array(normals), renderer.gl.STATIC_DRAW);
+    modelVertexNormalBuffer.itemSize = 3;
+    modelVertexNormalBuffer.numItems = normals.length / 3;
 
     //Bind UV coordinates
     var modelVertexTextureCoordBuffer = renderer.gl.createBuffer();
@@ -32,8 +39,14 @@ var modelManager = (function(){
     modelManager.models[key] = {
       modelVertexPositionBuffer: modelVertexPositionBuffer,
       modelVertexTextureCoordBuffer: modelVertexTextureCoordBuffer,
-      modelVertexIndexBuffer: modelVertexIndexBuffer
+      modelVertexIndexBuffer: modelVertexIndexBuffer,
+      modelVertexNormalBuffer: modelVertexNormalBuffer
     };
+  };
+
+  //Load a JSON model to render
+  var loadJSONModel = function(){
+
   };
 
   //Module visibility

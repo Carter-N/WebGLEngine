@@ -36,7 +36,7 @@ var renderer = (function(){
     renderer.initTextures();
 
     //Set background color
-    renderer.gl.clearColor(utils.normalizeRGB(44), utils.normalizeRGB(62), utils.normalizeRGB(80), 1.0);
+    renderer.gl.clearColor(0, 0, 0, 1.0);
     renderer.gl.enable(renderer.gl.DEPTH_TEST);
   };
 
@@ -77,6 +77,10 @@ var renderer = (function(){
     renderer.shaderProgram.vertexPositionAttribute = renderer.gl.getAttribLocation(renderer.shaderProgram, "aVertexPosition");
     renderer.gl.enableVertexAttribArray(renderer.shaderProgram.vertexPositionAttribute);
 
+    //Vertex normal attribute
+    renderer.shaderProgram.vertexNormalAttribute = renderer.gl.getAttribLocation(renderer.shaderProgram, "aVertexNormal");
+    renderer.gl.enableVertexAttribArray(renderer.shaderProgram.vertexNormalAttribute);
+
     //Texture coordinate attribute
     renderer.shaderProgram.textureCoordAttribute = renderer.gl.getAttribLocation(renderer.shaderProgram, "aTextureCoord");
     renderer.gl.enableVertexAttribArray(renderer.shaderProgram.textureCoordAttribute);
@@ -85,6 +89,9 @@ var renderer = (function(){
     renderer.shaderProgram.pMatrixUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uPMatrix");
     renderer.shaderProgram.mvMatrixUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uMVMatrix");
     renderer.shaderProgram.samplerUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uSampler");
+    renderer.shaderProgram.ambientColorUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uAmbientColor");
+    renderer.shaderProgram.lightingDirectionUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uLightingDirection");
+    renderer.shaderProgram.directionalColorUniform = renderer.gl.getUniformLocation(renderer.shaderProgram, "uDirectionalColor");
   };
 
   //Setup buffers
@@ -95,6 +102,34 @@ var renderer = (function(){
       -1.0, -1.0,  1.0, 1.0, -1.0,  1.0, 1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, 1.0,  1.0, -1.0, 1.0, -1.0, -1.0,
       -1.0,  1.0, -1.0, -1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0,  1.0, -1.0, -1.0,  1.0,
       1.0, -1.0, -1.0, 1.0,  1.0, -1.0, 1.0,  1.0,  1.0, 1.0, -1.0,  1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0,
+    ];
+
+    //Vertex normals
+    var cubeVertexNormals = [
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0
     ];
 
     //UV coordinates
@@ -108,23 +143,15 @@ var renderer = (function(){
       0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 8, 9, 10, 8, 10, 11, 12, 13, 14, 12, 14, 15, 16, 17, 18, 16, 18, 19, 20, 21, 22, 20, 22, 23
     ];
 
-    //Plane
-    var planeVertices = [-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, 1.0, 1.0, 0.0];
-    var planeTextureCoords = [0, 0, 1, 0, 0, 1, 1, 1];
-    var planeIndices = [0, 1, 2, 1, 2, 3];
-
     //Add the cube model
-    modelManager.addModel("cube", cubeVertices, cubeTextureCoords, cubeIndices);
-
-    //Add the plane model
-    modelManager.addModel("plane", planeVertices, planeTextureCoords, planeIndices);
+    modelManager.addModel("cube", cubeVertices, cubeVertexNormals, cubeTextureCoords, cubeIndices);
   };
 
   //Load textures
   var initTextures = function(){
 
     //Cube texture
-    textureManager.addTexture("cube", "image.png");
+    textureManager.addTexture("cube", "cube.png");
   };
 
   //Load texture to VRAM
@@ -163,6 +190,10 @@ var renderer = (function(){
     renderer.gl.bindBuffer(renderer.gl.ARRAY_BUFFER, modelManager.models[key].modelVertexPositionBuffer);
     renderer.gl.vertexAttribPointer(renderer.shaderProgram.vertexPositionAttribute, modelManager.models[key].modelVertexPositionBuffer.itemSize, renderer.gl.FLOAT, false, 0, 0);
 
+    //Bind vertex normal buffer to renderer
+    renderer.gl.bindBuffer(renderer.gl.ARRAY_BUFFER, modelManager.models[key].modelVertexNormalBuffer);
+    renderer.gl.vertexAttribPointer(renderer.shaderProgram.vertexNormalAttribute, modelManager.models[key].modelVertexNormalBuffer.itemSize, renderer.gl.FLOAT, false, 0, 0);
+
     //Bind texture coordinate buffer to renderer
     renderer.gl.bindBuffer(renderer.gl.ARRAY_BUFFER, modelManager.models[key].modelVertexTextureCoordBuffer);
     renderer.gl.vertexAttribPointer(renderer.shaderProgram.textureCoordAttribute, modelManager.models[key].modelVertexTextureCoordBuffer.itemSize, renderer.gl.FLOAT, false, 0, 0);
@@ -171,6 +202,17 @@ var renderer = (function(){
     renderer.gl.activeTexture(renderer.gl.TEXTURE0);
     renderer.gl.bindTexture(renderer.gl.TEXTURE_2D, textureManager.textures[textureKey]);
     renderer.gl.uniform1i(renderer.shaderProgram.samplerUniform, 0);
+
+    //Setup lighting for the model
+    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
+
+    //Directional light
+    var lightingDirection = [45, 45, -1.0];
+    var adjustedLD = vec3.create();
+    vec3.normalize(lightingDirection, adjustedLD);
+    vec3.scale(adjustedLD, -1);
+    renderer.gl.uniform3fv(renderer.shaderProgram.lightingDirectionUniform, adjustedLD);
+    renderer.gl.uniform3f(renderer.shaderProgram.directionalColorUniform, 20, 20, 20);
 
     //Bind index buffer to renderer
     renderer.gl.bindBuffer(renderer.gl.ELEMENT_ARRAY_BUFFER, modelManager.models[key].modelVertexIndexBuffer);
@@ -194,17 +236,7 @@ var renderer = (function(){
     //Set perspective matrix
     mat4.perspective(45, 1.85 / 1, 0.1, 100.0, renderer.pMatrix);
 
-    //Draw ground
-    renderer.renderModel("plane", "cube", {
-      position: {
-        x: 0.0, y: -3.0, z: -10.0
-      },
-      rotation: {
-        x: 90, y: 0, z: 0
-      }
-    });
-
-    //Draw ground
+    //Draw cube
     renderer.renderModel("cube", "cube", {
       position: {
         x: 0.0, y: 0.0, z: -10.0
@@ -217,8 +249,16 @@ var renderer = (function(){
 
   //Set shader matrix uniforms
   var setMatrixUniforms = function(){
+
+    //Perspective matrix and model view matrix
     renderer.gl.uniformMatrix4fv(renderer.shaderProgram.pMatrixUniform, false, renderer.pMatrix);
     renderer.gl.uniformMatrix4fv(renderer.shaderProgram.mvMatrixUniform, false, renderer.mvMatrix);
+
+    //Normal matrix
+    var normalMatrix = mat3.create();
+    mat4.toInverseMat3(renderer.mvMatrix, normalMatrix);
+    mat3.transpose(normalMatrix);
+    renderer.gl.uniformMatrix3fv(renderer.shaderProgram.nMatrixUniform, false, normalMatrix);
   };
 
   //Module visibility
