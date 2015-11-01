@@ -36,6 +36,18 @@ var renderer = (function(){
     //Set background color
     renderer.gl.clearColor(0, 0, 0, 1.0);
     renderer.gl.enable(renderer.gl.DEPTH_TEST);
+
+    //Window resize event
+    window.onresize = function(){
+
+      //Resize canvas
+      renderer.canvas.width = window.innerWidth;
+      renderer.canvas.height = window.innerHeight;
+
+      //Resize viewport
+      renderer.gl.viewportWidth = renderer.canvas.width;
+      renderer.gl.viewportHeight = renderer.canvas.height;
+    };
   };
 
   //Setup the WebGL rendering context

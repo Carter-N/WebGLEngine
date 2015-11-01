@@ -29,5 +29,25 @@ var testScene = {
         x: 45, y: testScene.rotY, z: 0
       }
     });
+
+    //Draw a cube
+    renderer.renderModel("cube", "cube", {
+      position: {
+        x: -30, y: 0, z: -50.0
+      },
+      rotation: {
+        x: 45, y: -testScene.rotY, z: 0
+      }
+    });
+
+    //Draw a cube
+    renderer.renderModel("cube", "cube", {
+      position: {
+        x: 30, y: 0, z: -50.0
+      },
+      rotation: {
+        x: 45, y: -testScene.rotY, z: 0
+      }
+    });
   }
 };
