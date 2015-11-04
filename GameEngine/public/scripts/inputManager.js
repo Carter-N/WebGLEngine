@@ -11,7 +11,7 @@ var inputManager = (function(){
 
   //Key is released
   window.onkeyup = function(e){
-    inputManager.keysDown[e.keyEvent] = false;
+    inputManager.keysDown[e.keyCode] = false;
   };
 
   //Module visibility

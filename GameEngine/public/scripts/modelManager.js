@@ -57,7 +57,8 @@ var modelManager = (function(){
 
         //Get JSON data
         var data = JSON.parse(request.responseText);
-        modelManager.addModel(key, data.vertexPositions, data.vertexNormals, data.vertexTextureCoords, data.indices)
+        console.log(data);
+        modelManager.addModel(key, data.vertices, data.normals, data.uvs, data.indices);
       }
     }
     request.send();

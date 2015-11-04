@@ -5,9 +5,6 @@
 2-(Game System / Game Object) manager
   *Game objects that can be instantiated and manipulated
 
-3-Scene manager
-  *Switch from scene to scene similarly to a game state manager
-
 4-Audio manager
   *Load audio to dictionary
   *play or stop audio at will / in loops
