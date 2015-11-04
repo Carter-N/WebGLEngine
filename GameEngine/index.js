@@ -17,8 +17,8 @@ app.get("/", function(request, response){
 });
 
 //Listen
-var server = app.listen(80, function(){
+var server = app.listen(3000, function(){
 
   //Debug
-  console.log("Server listening");
+  console.log("Server listening on port 3000");
 });
