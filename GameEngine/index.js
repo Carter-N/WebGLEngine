@@ -12,8 +12,8 @@ app.use(express.static("public/res/textures"));
 app.use(express.static("public/res/models"));
 
 //Routing
-app.get("/", function(request, response){
-  res.sendFile("index.html");
+app.get("/", function(req, res){
+  res.sendFile("public/index.html");
 });
 
 //Listen

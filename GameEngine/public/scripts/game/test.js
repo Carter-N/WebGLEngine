@@ -10,11 +10,11 @@ var testScene = {
   //Load assets and setup scene
   init: function(){
 
-    //Cube model
+    //Load models
     modelManager.loadJSONModel("teapot", "res/models/teapot.json");
     modelManager.loadJSONModel("laptop", "res/models/laptop.json");
 
-    //Cube texture
+    //Load textures
     textureManager.addTexture("cube", "res/textures/cube.jpg");
     textureManager.addTexture("grad", "res/textures/grad.png");
   },
@@ -43,20 +43,8 @@ var testScene = {
       testScene.velY -= 0.01;
     }
 
-    //Generate a quad plane with random noise
-    var generateTerrain = function(){
-
-    };
-
-    //Draw a cube
-    renderer.renderModel("laptop", "grad", {
-      position: {x: 2, y: 0, z: -5.0},
-      rotation: {x: testScene.rotX, y: testScene.rotY, z: 0}
-    });
-
-    renderer.renderModel("teapot", "cube", {
-      position: {x: -2, y: 0, z: -5.0},
-      rotation: {x: testScene.rotX, y: testScene.rotY, z: 0}
-    });
+    //Draw models
+    renderer.renderModel("laptop", "grad", {position: {x: 2, y: 0, z: -5.0}, rotation: {x: testScene.rotX, y: testScene.rotY, z: 0}});
+    renderer.renderModel("teapot", "cube", {position: {x: -5, y: 0, z: -50.0}, rotation: {x: testScene.rotX, y: testScene.rotY, z: 0}});
   }
 };

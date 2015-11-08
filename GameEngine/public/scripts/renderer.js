@@ -136,15 +136,15 @@ var renderer = (function(){
     renderer.gl.uniform1i(renderer.shaderProgram.samplerUniform, 0);
 
     //Setup lighting for the model
-    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.8, 0.8, 0.8);
+    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
 
     //Directional light
-    var lightingDirection = [45, 45, -1.0];
+    var lightingDirection = [-0.25, -0.25, -1.0];
     var adjustedLD = vec3.create();
     vec3.normalize(lightingDirection, adjustedLD);
     vec3.scale(adjustedLD, -1);
     renderer.gl.uniform3fv(renderer.shaderProgram.lightingDirectionUniform, adjustedLD);
-    renderer.gl.uniform3f(renderer.shaderProgram.directionalColorUniform, 20, 20, 20);
+    renderer.gl.uniform3f(renderer.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
 
     //Bind index buffer to renderer
     renderer.gl.bindBuffer(renderer.gl.ELEMENT_ARRAY_BUFFER, modelManager.models[key].modelVertexIndexBuffer);
