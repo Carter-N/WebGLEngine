@@ -111,12 +111,12 @@ var renderer = (function(){
     mat4.identity(renderer.mvMatrix);
 
     //Translate model view matrix 5 units back along z axis
-    mat4.translate(renderer.mvMatrix, [transform.position.x, transform.position.y, transform.position.z]);
+    mat4.translate(renderer.mvMatrix, [transform.position[0], transform.position[1], transform.position[2]]);
 
     //Rotate the model view matrix
-    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.x), [1, 0, 0]);
-    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.y), [0, 1, 0]);
-    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation.z), [0, 0, 1]);
+    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation[0]), [1, 0, 0]);
+    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation[1]), [0, 1, 0]);
+    mat4.rotate(renderer.mvMatrix, utils.degToRad(transform.rotation[2]), [0, 0, 1]);
 
     //Bind vertex position buffer to renderer
     renderer.gl.bindBuffer(renderer.gl.ARRAY_BUFFER, modelManager.models[key].modelVertexPositionBuffer);
@@ -134,17 +134,6 @@ var renderer = (function(){
     renderer.gl.activeTexture(renderer.gl.TEXTURE0);
     renderer.gl.bindTexture(renderer.gl.TEXTURE_2D, textureManager.textures[textureKey]);
     renderer.gl.uniform1i(renderer.shaderProgram.samplerUniform, 0);
-
-    //Setup lighting for the model
-    renderer.gl.uniform3f(renderer.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
-
-    //Directional light
-    var lightingDirection = [-0.25, -0.25, -1.0];
-    var adjustedLD = vec3.create();
-    vec3.normalize(lightingDirection, adjustedLD);
-    vec3.scale(adjustedLD, -1);
-    renderer.gl.uniform3fv(renderer.shaderProgram.lightingDirectionUniform, adjustedLD);
-    renderer.gl.uniform3f(renderer.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
 
     //Bind index buffer to renderer
     renderer.gl.bindBuffer(renderer.gl.ELEMENT_ARRAY_BUFFER, modelManager.models[key].modelVertexIndexBuffer);
@@ -170,7 +159,29 @@ var renderer = (function(){
 
     //Render the current scene
     if(sceneManager.currentScene){
+
+      //Render scene
       sceneManager.currentScene.render();
+
+      //Setup lighting for the model
+      renderer.gl.uniform3f(
+        renderer.shaderProgram.ambientColorUniform,
+        lightingManager.lights.ambientLight[0],
+        lightingManager.lights.ambientLight[1],
+        lightingManager.lights.ambientLight[2]
+      );
+
+      //Directional light
+      var lightingDirection = lightingManager.lights.directionalLights[0].direction;
+      var adjustedLD = vec3.create();
+      vec3.normalize(lightingDirection, adjustedLD);
+      vec3.scale(adjustedLD, -1);
+      renderer.gl.uniform3fv(renderer.shaderProgram.lightingDirectionUniform, adjustedLD);
+      renderer.gl.uniform3f(renderer.shaderProgram.directionalColorUniform,
+        lightingManager.lights.directionalLights[0].color[0],
+        lightingManager.lights.directionalLights[0].color[0],
+        lightingManager.lights.directionalLights[0].color[0]
+      );
     }
   };
 

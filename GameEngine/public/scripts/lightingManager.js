@@ -10,12 +10,15 @@ var lightingManager = (function(){
 
   //Set ambient light color
   var addAmbientLight = function(color){
-
+    lightingManager.lights.ambientLight = color;
   };
 
   //Add a directional light to the scene
   var addDirectionalLight = function(direction, color){
-
+    lightingManager.lights.directionalLights.push({
+      direction: direction,
+      color: color
+    });
   };
 
   //Add a point light to the scene
@@ -25,7 +28,7 @@ var lightingManager = (function(){
 
   //Module visibility
   return {
-    lights: lights
+    lights: lights,
     addAmbientLight: addAmbientLight,
     addDirectionalLight: addDirectionalLight,
     addPointLight: addPointLight

@@ -3,11 +3,9 @@
   *play or stop audio at will / in loops
 
 5-Lighting
-  *Diffuse lighting
-  *Directional light game object
-  *Ambient light game object
-  *Point light game object
-  *Lighting manager
+  *Fix directional light
+  *Point light
+  *Multiple point and directional lights
 
 6-Javascript include system (load scripts from the core module)
   *Possibly 3rd party
@@ -21,6 +19,13 @@
 9-Camera
 
 10-GUI system
+  *Windows
+  *Window elements
+  *Fps counter
+  *Text
+  *Images
+  *Buttons
+  *Etc...
 
 11-Wait for load before rendering
 
